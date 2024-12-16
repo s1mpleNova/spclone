@@ -4,7 +4,8 @@ import 'package:client/core/theme/app_pallete.dart';
 import 'package:flutter/material.dart';
 
 class AuthgradButton extends StatelessWidget {
-  const AuthgradButton({super.key});
+  final String butname;
+  const AuthgradButton({super.key, required this.butname});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class AuthgradButton extends StatelessWidget {
             backgroundColor: Pallete.transparentColor,
             shadowColor: Pallete.transparentColor),
         child: Text(
-          "Sign-Up",
+          butname,
           style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w600),
         ),
       ),
