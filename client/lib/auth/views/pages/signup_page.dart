@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:client/auth/views/pages/login_page.dart';
 import 'package:client/core/theme/app_pallete.dart';
 import 'package:client/model/view/widgets/authgrad_button.dart';
 import 'package:flutter/material.dart';
@@ -65,20 +66,33 @@ class _SignupPageState extends State<SignupPage> {
               const SizedBox(height: 20.0),
               AuthgradButton(
                 butname: "Sign-Up",
+                onTap: () {},
               ),
               const SizedBox(height: 20.0),
-              RichText(
-                text: TextSpan(
-                  text: "Already have an account? ",
-                  style: Theme.of(context).textTheme.titleMedium,
-                  children: [
-                    TextSpan(
-                      text: "Login",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Pallete.gradient2),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginPage(
+                        title: "Login",
+                      ),
                     ),
-                  ],
+                  );
+                },
+                child: RichText(
+                  text: TextSpan(
+                    text: "Already have an account? ",
+                    style: Theme.of(context).textTheme.titleMedium,
+                    children: [
+                      TextSpan(
+                        text: "Login",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Pallete.gradient2),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:client/auth/repositories/auth_remote_repo.dart';
+import 'package:client/auth/views/pages/signup_page.dart';
 import 'package:client/core/theme/app_pallete.dart';
 import 'package:client/model/view/widgets/authgrad_button.dart';
 import 'package:flutter/material.dart';
@@ -58,20 +60,35 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 20.0),
               AuthgradButton(
                 butname: "Login",
+                onTap: () async {
+                  await AuthRemoteRepo().login(
+                      email: emailController.text,
+                      password: passController.text);
+                },
               ),
               const SizedBox(height: 20.0),
-              RichText(
-                text: TextSpan(
-                  text: "Don't have an account? ",
-                  style: Theme.of(context).textTheme.titleMedium,
-                  children: [
-                    TextSpan(
-                      text: "Sign up",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Pallete.gradient2),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SignupPage(title: "Signup",),
                     ),
-                  ],
+                  );
+                },
+                child: RichText(
+                  text: TextSpan(
+                    text: "Don't have an account? ",
+                    style: Theme.of(context).textTheme.titleMedium,
+                    children: [
+                      TextSpan(
+                        text: "Sign up",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Pallete.gradient2),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 
 class AuthgradButton extends StatelessWidget {
   final String butname;
-  const AuthgradButton({super.key, required this.butname});
+  final VoidCallback onTap;
+  const AuthgradButton({super.key, required this.butname, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,7 @@ class AuthgradButton extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(12.0)),
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: onTap,
         style: ElevatedButton.styleFrom(
             fixedSize: Size(395, 55),
             backgroundColor: Pallete.transparentColor,
