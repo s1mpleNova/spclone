@@ -1,49 +1,44 @@
-import bcrypt
-from fastapi import APIRouter, Depends, HTTPException
+#contains all the auth related routes like signup and login
 import uuid
-from database import get_db
-from models.user_mod import User
+import bcrypt
+from fastapi import Depends, HTTPException
+from models.user import User
 from pydantic_schemas.user_create import UserCreate
+from fastapi import APIRouter
+from database import get_db
 from pydantic_schemas.user_login import UserLogin
+from sqlalchemy.orm import Session
+ #to not create an instance of fastapi for each route we use the apirouter by fastapi 
+ #to access it create an instance of it as shown below
+router = APIRouter()
 
 
-router=APIRouter()
-@router.post("/Signup",status_code=201)
-async def signup(user: UserCreate, db= Depends(get_db)):
-    # Check if the user already exists
-    existing_user = await User.filter(email=user.email).first()
-    if existing_user:
-        raise HTTPException(status_code=400, detail="User with the same email already exists")
+@router.post('/signup')
+def signup(user:UserCreate,db:Session=Depends(get_db)):
+    #check if user exists
+    user_db=db.query(User).filter(User.email==user.email).first()
+    if user_db:
+        raise HTTPException(400,'bad request')
+    
+#if user doesnt exist then we need to add the user
+#the add function takes an input of the instance of the user class and we need to pass the id,name,pass etc properties 
+    #we need to hash the password in order to not get the error cant escape str to binary
+    # user.password.encrypt to encrypt the password if the current user  
+    hash_pw=bcrypt.hashpw(user.password.encode(),bcrypt.gensalt(16))
+    user_db=User(id=str(uuid.uuid4()),name=user.name,email=user.email,password=hash_pw)
+    db.add(user_db)
+    db.commit()
+    db.refresh(user_db)
+    return user_db
 
-    # Add the new user to the database
-    hashed_pw=bcrypt.hashpw(user.password.encode("utf-8"), bcrypt.gensalt())  # Hash the password
-    new_user = await User.create(
-        id=str(uuid.uuid4()),
-        name=user.name,
-        email=user.email,
-        password=hashed_pw,  # Convert password to binary
-    )
-    return {
-        "id": str(new_user.id),
-        "name": new_user.name,
-        "email": new_user.email,
-    }
-
-@router.post("/login")
-async def login_user(user:UserLogin,db=Depends(get_db)):
-    #check if user with same email already exists
-    #user_db=existing_db
-    existing_user=await User.filter(email=user.email).first()
-    if not existing_user:
-        raise HTTPException(status_code=400,detail='user does not exist')
-    #gensalt will random letters to encrypt the password everytime 
-    #check if the password matches or not 
-
-    is_match=bcrypt.checkpw(user.password.encode(),existing_user.password) 
-    if not is_match:
-        raise HTTPException(status_code=400, detail='Incorrect password')
-    return {
-        "id": str(existing_user.id),
-        "name": existing_user.name,
-        "email": existing_user.email,
-    }
+@router.post('/login')
+def login_user(user:UserLogin,db:Session=Depends(get_db)):
+    user_db=db.query(User).filter(User.email==user.email).first() #check email
+    if not user_db:
+        raise HTTPException(400,"user not found")
+    
+    password=bcrypt.checkpw(user.password.encode,user_db.password) #check password gives the value as boolean 
+    #as the op is boolean we check if the value is true
+    if not password:
+        raise HTTPException(400,'incorrect password')
+    return(user_db)

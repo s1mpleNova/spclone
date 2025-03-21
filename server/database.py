@@ -1,31 +1,13 @@
-from fastapi import FastAPI
-from tortoise import Tortoise
-from tortoise.contrib.fastapi import register_tortoise
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-app = FastAPI()
+DBURL='postgresql://postgres:password@localhost:5433/testU'
+engine=create_engine(DBURL)
+SessionLocal=sessionmaker(autocommit=False,autoflush=False,bind=engine)
 
-# Database URL
-DATABASE_URL = "postgres://postgres:password@localhost:5433/musicapp"
-# Register Tortoise ORM with FastAPI
-def init_db(app):
+def get_db():
+    db=SessionLocal()
     try:
-        register_tortoise(
-        app,
-        db_url=DATABASE_URL,
-        modules={"models": ["models.user_mod"]},
-        generate_schemas=False,  # Automatically create database schema
-        add_exception_handlers=True,)
-
-        print("connected")
-        Tortoise.close_coonnections()
-    except Exception as e:
-        print("error ",e)
-
-async def get_db():
-    await Tortoise.init(db_url=DATABASE_URL,modules={"models": ["main"]},
-    )
-    try:
-        yield init_db(app)
+        yield db
     finally:
-        await Tortoise.close_connections()
-    
+        db.close()
