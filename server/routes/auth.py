@@ -37,7 +37,7 @@ def login_user(user:UserLogin,db:Session=Depends(get_db)):
     if not user_db:
         raise HTTPException(400,"user not found")
     
-    password=bcrypt.checkpw(user.password.encode,user_db.password) #check password gives the value as boolean 
+    password=bcrypt.checkpw(user.password.encode(),user_db.password) #check password gives the value as boolean 
     #as the op is boolean we check if the value is true
     if not password:
         raise HTTPException(400,'incorrect password')

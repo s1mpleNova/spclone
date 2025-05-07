@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:client/auth/repositories/auth_remote_repo.dart';
 import 'package:client/auth/views/pages/login_page.dart';
 import 'package:client/core/theme/app_pallete.dart';
 import 'package:client/model/view/widgets/authgrad_button.dart';
@@ -66,7 +67,14 @@ class _SignupPageState extends State<SignupPage> {
               const SizedBox(height: 20.0),
               AuthgradButton(
                 butname: "Sign-Up",
-                onTap: () {},
+                onTap: () async {
+                  final res = await AuthRemoteRepo().signup(
+                    name: nameController.text,
+                    email: emailController.text,
+                    password: passController.text,
+                  );
+                  print(res);//the value of res is now either a string or a map
+                },
               ),
               const SizedBox(height: 20.0),
               GestureDetector(

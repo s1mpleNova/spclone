@@ -18,11 +18,12 @@ class CustomField extends StatelessWidget {
         hintText: hint,
       ),
       obscureText: isObsecure,
-      validator: (value) {
-        if (value!.trim().isEmpty) {
+      validator: (value) 
+      {  
+        if (value!.trim().isEmpty) 
+        {
           return "$hint is empty";
         }
-        ;
       },
     );
   }

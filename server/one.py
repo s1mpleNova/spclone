@@ -1,4 +1,3 @@
-import bcrypt
 from fastapi import FastAPI
 from models.base import Base
 from  routes import auth
